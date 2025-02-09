@@ -1,14 +1,29 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        secure: true
+
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/chatbot
+    url: jdbc:mariadb://127.0.0.1:3306/chatbot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
-
+    hikari:
+      auto-commit: true
+      pool-name: HikariCP
+      connection-timeout: 30000
+      maximum-pool-size: 10
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false
     hibernate:
       ddl-auto: update
+      format_sql: true
     show-sql: true
 
   security:
