@@ -24,6 +24,9 @@ repositories {
 }
 
 dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'  // WebSocket 지원
+	implementation 'com.fasterxml.jackson.core:jackson-databind'  // JSON 변환 지원
 	// Spring Boot 기본 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

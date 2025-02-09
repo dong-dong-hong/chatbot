@@ -8,5 +8,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  define: {
+    global: {}, // global이 없어서 발생하는 문제
   }
 })
