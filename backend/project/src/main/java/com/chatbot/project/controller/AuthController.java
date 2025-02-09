@@ -28,10 +28,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> request) {
-        Optional<User> user = userService.findByUsername(request.get("username"));
+        Optional<User> user = userService.findByUsername(request.get("username")); // Optional<User>로 반환
+
         if (user.isPresent() && new BCryptPasswordEncoder().matches(request.get("password"), user.get().getPassword())) {
             return jwtUtil.generateToken(user.get().getUsername());
         }
         return "Invalid credentials";
     }
+
 }

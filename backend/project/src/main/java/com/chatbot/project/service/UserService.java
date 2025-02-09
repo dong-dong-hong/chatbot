@@ -2,24 +2,24 @@ package com.chatbot.project.service;
 
 import com.chatbot.project.entity.User;
 import com.chatbot.project.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) { // ✅ 빈으로 등록된 PasswordEncoder 사용
         this.userRepository = userRepository;
-        this.encoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser(String username, String password) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(encoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password)); // ✅ BCrypt 암호화 적용
         return userRepository.save(user);
     }
 
