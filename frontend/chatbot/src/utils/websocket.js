@@ -5,54 +5,49 @@ import SockJS from 'sockjs-client';
 const messages = ref([]);
 let stompClient = null;
 let isConnected = ref(false);
-let manualDisconnect = false; // ✅ 사용자가 수동으로 끊었는지 확인
+let reconnectAttempts = 0;
+const MAX_RECONNECT_DELAY = 30000;
 
-// 🚀 WebSocket 연결 (사용자가 끊지 않는 한 유지)
 const connectWebSocket = () => {
   if (isConnected.value) {
     console.log('🔌 WebSocket 이미 연결됨');
     return;
   }
 
-  manualDisconnect = false; // ✅ 수동 종료가 아니면 재연결 허용
+  console.log(`🚀 WebSocket 연결 시도 (${reconnectAttempts + 1}번째)`);
 
-  console.log('🚀 WebSocket 연결 시도 중...');
+  if (stompClient) {
+    stompClient.deactivate();
+  }
+
   const socket = new SockJS('http://localhost:8080/chat');
-
   stompClient = new Client({
     webSocketFactory: () => socket,
     debug: (str) => console.log(str),
-    reconnectDelay: 5000, // ✅ 서버에서 강제 종료해도 5초 후 재연결
-  });
+    reconnectDelay: 5000, // 기본 재연결 대기 시간
 
-  stompClient.onConnect = () => {
-    console.log('✅ WebSocket (STOMP) 연결됨');
-    isConnected.value = true;
+    onConnect: () => {
+      console.log('✅ WebSocket (STOMP) 연결됨');
+      isConnected.value = true;
+      reconnectAttempts = 0;
 
-    stompClient.subscribe('/topic/messages', (message) => {
-      try {
-        const receivedMsg = JSON.parse(message.body);
-        messages.value.push(receivedMsg);
-      } catch (error) {
-        console.error('❌ 메시지 파싱 오류:', error);
-      }
-    });
-  };
+      stompClient.subscribe('/topic/messages', (message) => {
+        messages.value.push(JSON.parse(message.body));
+      });
+    },
 
-  stompClient.onStompError = (error) => {
-    console.error('🚨 STOMP 프로토콜 에러:', error);
-  };
+    onWebSocketClose: () => {
+      console.log('❌ WebSocket 연결 종료됨');
+      isConnected.value = false;
 
-  stompClient.onWebSocketClose = () => {
-    console.log('❌ WebSocket 연결 종료됨');
-    isConnected.value = false;
+      // 재연결 간격 점진적 증가
+      const reconnectDelay = Math.min(5000 * 2 ** reconnectAttempts, MAX_RECONNECT_DELAY);
+      reconnectAttempts++;
 
-    // ✅ 사용자가 끊은 게 아니라면 재연결
-    if (!manualDisconnect) {
-      console.log('🔄 WebSocket 강제 종료됨. 재연결 시도 중...');
-      setTimeout(() => connectWebSocket(), 3000);
+      console.log(`🔄 WebSocket 강제 종료됨. ${reconnectDelay / 1000}초 후 재연결 시도...`);
+      setTimeout(connectWebSocket, reconnectDelay);
     }
-  };
+  });
 
   stompClient.activate();
 };
@@ -73,15 +68,12 @@ const sendMessage = (text) => {
   }
 };
 
-// ❌ WebSocket 연결 해제 (사용자가 직접 종료)
+// ❌ WebSocket 연결 해제
 const disconnectWebSocket = () => {
   if (stompClient && isConnected.value) {
-    manualDisconnect = true; // ✅ 사용자가 종료했음을 표시
     stompClient.deactivate();
-    console.log('🔌 WebSocket 연결 수동 해제됨');
     isConnected.value = false;
-  } else {
-    console.warn('⚠ WebSocket이 이미 끊어졌거나 연결되지 않음');
+    console.log('🔌 WebSocket 연결 수동 해제됨');
   }
 };
 
