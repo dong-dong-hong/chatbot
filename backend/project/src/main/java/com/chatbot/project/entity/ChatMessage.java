@@ -26,6 +26,9 @@ public class ChatMessage {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private String receiver;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -36,4 +39,7 @@ public class ChatMessage {
         this.sender = sender;
         this.createdAt = LocalDateTime.now();
     }
+
+
+
 }

@@ -4,7 +4,9 @@
       <div
         v-for="(msg, index) in messages"
         :key="index"
-        :class="['message', msg.sender === myName ? 'user' : 'bot']"
+        :class="['message',
+            msg.sender === myName ? 'user' :
+            msg.sender === 'bot' ? 'bot' : 'other']"
       >
         <span class="bubble">{{ msg.text }}</span>
       </div>
@@ -36,11 +38,6 @@ export default {
         sendMessage(newMessage.value, myName.value);
         newMessage.value = '';
       }
-    };
-
-    const logout = () => {
-      clearTokens(); // 기존 토큰 삭제
-      disconnectWebSocket(); // WebSocket 연결 종료
     };
 
     onMounted(() => {

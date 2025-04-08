@@ -1,6 +1,6 @@
 export const getAccessToken = () => {
   return (
-    localStorage.getItem('token') ||   // 여기만 바꾸면 됨
+    localStorage.getItem('token') ||
     sessionStorage.getItem('token') ||
     getCookie('token')
   );

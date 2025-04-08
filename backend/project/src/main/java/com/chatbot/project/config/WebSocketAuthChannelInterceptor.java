@@ -20,8 +20,6 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("📩 [Interceptor] preSend 호출됨"); // ✅ 1단계: 무조건 찍혀야 함
-
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
@@ -39,7 +37,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
                     if (isValid) {
                         String username = jwtUtil.getUsernameFromToken(token);
-                        accessor.setUser(new StompPrincipal(username));
+                        accessor.setUser(new StompPrincipal(username,token));
                         System.out.println("✅ 사용자 인증 성공: " + username); // ✅ 5단계: 성공 시
                     } else {
                         System.out.println("❌ JWT 토큰 검증 실패");

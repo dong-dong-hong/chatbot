@@ -64,7 +64,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
                                                       Map<String, Object> attributes) {
                         String token = (String) attributes.get("token");
-                        System.out.println("token: " + token);
                         return () -> token != null ? token : "anonymous";
                     }
                 })
