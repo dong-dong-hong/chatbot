@@ -10,6 +10,6 @@ export default defineConfig({
     }
   },
   define: {
-    global: {}, // global이 없어서 발생하는 문제
+    global: 'window'
   }
 })

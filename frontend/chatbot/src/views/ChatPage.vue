@@ -1,7 +1,11 @@
 <template>
   <div class="chat-container">
     <div class="messages">
-      <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.sender]">
+      <div
+        v-for="(msg, index) in messages"
+        :key="index"
+        :class="['message', msg.sender === myName ? 'user' : 'bot']"
+      >
         <span class="bubble">{{ msg.text }}</span>
       </div>
     </div>
@@ -19,24 +23,41 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { connectWebSocket, sendMessage, messages, disconnectWebSocket, isConnected } from '@/utils/websocket';
+import { messages, connectWebSocket, sendMessage, isConnected } from '@/utils/websocket';
+import { clearTokens } from '@/utils/auth.js'
 
 export default {
   setup() {
     const newMessage = ref('');
+    const myName = ref('');
 
     const sendMessageHandler = () => {
       if (newMessage.value.trim()) {
-        sendMessage(newMessage.value);
+        sendMessage(newMessage.value, myName.value);
         newMessage.value = '';
       }
     };
 
+    const logout = () => {
+      clearTokens(); // 기존 토큰 삭제
+      disconnectWebSocket(); // WebSocket 연결 종료
+    };
+
     onMounted(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          myName.value = payload.sub || '';
+        } catch (e) {
+          console.warn('❌ 토큰 파싱 실패:', e);
+        }
+      }
+      console.log('📡 Chat 컴포넌트 마운트됨. WebSocket 연결 시도...');
       connectWebSocket();
     });
 
-    return { newMessage, sendMessageHandler, messages, isConnected };
+    return { newMessage, sendMessageHandler, messages, isConnected, myName };
   }
 };
 </script>

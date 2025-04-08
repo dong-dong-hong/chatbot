@@ -7,24 +7,29 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chatbot_message") // 실제 테이블명과 매칭
+@Table(name = "chatbot_message")
 @Getter
 @Setter
 @NoArgsConstructor
 public class ChatMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false) // NULL 방지
+    @Column(nullable = false)
     private String text;
 
     @Column(nullable = false)
     private String sender;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public ChatMessage(String text, String sender) {
         this.text = text;
