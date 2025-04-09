@@ -9,7 +9,7 @@ Vue + Spring Boot 환경에서 동작하며, JWT 로그인 기능과 MariaDB 연
 
 | 분류         | 기술                            |
 |--------------|----------------------------------|
-| 프론트엔드   | Vue 3 + Yarn + Vite              |
+| 프론트엔드   | Vue 3 + Yarn + Vite + Pinia      |
 | 백엔드       | Spring Boot 3.4.2               |
 | 실시간 통신  | STOMP over WebSocket + SockJS   |
 | 인증         | JWT                             |
