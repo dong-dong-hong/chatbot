@@ -28,7 +28,7 @@ const logout = () => {
   max-width: 400px;
   background: #4CAF50;
   color: white;
-  padding: 12px 20px;
+  padding: 12px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
