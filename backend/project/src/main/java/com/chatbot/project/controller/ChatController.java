@@ -80,6 +80,10 @@ public class ChatController {
             return "테스트입니다.";
         } else if (text.contains("손동홍")) {
             return "손동홍입니다.";
+        }else if(text.contains("야라시") || text.contains("카라다") || text.contains("이대산") || text.contains("대산")) {
+            return "3대 500 미만 사형";
+        }else if(text.contains("박지은") || text.contains("지은") || text.contains("왕자기")) {
+            return "자기 왕배쨜 내놔";
         }
         return "죄송해요, 무슨 말씀이신지 잘 모르겠어요.";
     }

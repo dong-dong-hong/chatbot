@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 import RegisterPage from '@/views/RegisterPage.vue'
-import ChatPage from '@/views/ChatPage.vue'
+import ChatPage from '@/views/chatPage.vue'
 import FindUsername from '@/views/FindUsername.vue';
 import FindPassword from '@/views/FindPassword.vue';
+
 
 const routes = [
   { path: '/', redirect: '/login' },

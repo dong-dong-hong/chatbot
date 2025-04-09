@@ -12,21 +12,29 @@
 
 <script setup>
 import { ref } from 'vue';
-
+import { useModalStore } from '@/stores/modal';
+import { useRouter } from 'vue-router'
+const modal = useModalStore();
 const username = ref('');
 const email = ref('');
+const router = useRouter();
 
 const findPassword = async () => {
-  const response = await fetch('http://localhost:8080/api/auth/find-password', {
+  const response = await fetch('http://localhost:8080/auth/find-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: username.value, email: email.value })
+    body: JSON.stringify({ username: username.value.trim(), email: email.value.trim() })
   });
 
   if (response.ok) {
-    alert('입력한 이메일로 비밀번호 재설정 링크가 발송되었습니다.');
+    const data = await response.json();
+    console.log(data);
+    // alert('입력한 이메일로 비밀번호 재설정 링크가 발송되었습니다.');
+    modal.showModal(`${data.tempPassword} 입니다.`); // 원래는 운영에서는 이메일에다가 발송해야하지만 임의로 모달에다가 임시 비밀번호 전달
+    router.push('/login');
   } else {
-    alert('일치하는 계정을 찾을 수 없습니다.');
+    modal.showModal('일치하는 계정을 찾을 수 없습니다.');
+    // alert('일치하는 계정을 찾을 수 없습니다.');
   }
 };
 </script>

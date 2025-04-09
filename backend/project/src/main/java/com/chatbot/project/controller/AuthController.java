@@ -3,12 +3,15 @@ package com.chatbot.project.controller;
 import com.chatbot.project.entity.User;
 import com.chatbot.project.security.JwtUtil;
 import com.chatbot.project.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -74,4 +77,48 @@ public class AuthController {
 
         return response;
     }
+
+    @GetMapping("/find-username")
+    public ResponseEntity<Map<String, String>> findUsername(@RequestParam String email) {
+        Optional<User> userOpt = userService.findByEmail(email);
+        Map<String, String> response = new HashMap<>();
+        if (userOpt.isPresent()) {
+            response.put("username", userOpt.get().getUsername());
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "해당 이메일로 등록된 계정이 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @PostMapping("/find-password")
+    public ResponseEntity<Map<String, String>> findPassword(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String email = request.get("email");
+        Map<String, String> response = new HashMap<>();
+
+        Optional<User> userOpt = userService.findByUsername(username);
+        if (userOpt.isPresent() && userOpt.get().getEmail().equals(email)) {
+            // 1. 임시 비밀번호 생성
+            String tempPassword = UUID.randomUUID().toString().substring(0, 8); // 예: 8자리 임시비번
+
+            // 2. 암호화해서 DB에 저장
+            User user = userOpt.get();
+            user.setPassword(passwordEncoder.encode(tempPassword));
+            userService.save(user);
+
+            // 실제 운영에선 이메일 전송 필요
+            response.put("tempPassword", tempPassword);
+            response.put("message", "임시 비밀번호가 발급되었습니다.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "일치하는 계정을 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+
+
+
+
 }

@@ -11,17 +11,22 @@
 
 <script setup>
 import { ref } from 'vue';
-
+import { useModalStore } from '@/stores/modal';
+const modal = useModalStore();
 const email = ref('');
 
 const findUsername = async () => {
-  const response = await fetch(`http://localhost:8080/api/auth/find-username?email=${email.value}`);
+  const response = await fetch(`http://localhost:8080/auth/find-username?email=${email.value.trim()}`);
+
+  console.log('response: ',response);
 
   if (response.ok) {
     const data = await response.json();
-    alert(`아이디: ${data.username}`);
+    // alert(`아이디: ${data.username}`);
+    modal.showModal(`아이디는 ${data.username} 입니다.`)
   } else {
-    alert('가입된 이메일이 없습니다.');
+    // alert('가입된 이메일이 없습니다.');
+    modal.showModal('가입된 이메일이 없습니다.');
   }
 };
 </script>
