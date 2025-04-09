@@ -2,8 +2,8 @@
   <div class="container">
     <div class="login-box">
       <h2>로그인</h2>
-      <input v-model="username" placeholder="Username" class="input-field" @keyup.enter="login" />
-      <input v-model="password" type="password" placeholder="Password" class="input-field" @keyup.enter="login" />
+      <input v-model="username" placeholder="아이디" class="input-field" @keyup.enter="login" />
+      <input v-model="password" type="password" placeholder="패스워드" class="input-field" @keyup.enter="login" />
 
       <button @click="login" class="btn login-btn">로그인</button>
 
@@ -24,19 +24,23 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { useModalStore } from '@/stores/modal';
 const username = ref('');
 const password = ref('');
 const router = useRouter();
 
+const modal = useModalStore();
+
 const login = async () => {
   if (!username.value.trim()) {
-    alert('아이디를 입력하세요.');
+    modal.showModal('아이디를 입력하세요.');
+    // alert('아이디를 입력하세요.');
     return;
   }
 
   if (!password.value.trim()) {
-    alert('비밀번호를 입력하세요.');
+    modal.showModal('비밀번호를 입력하세요.');
+    // alert('비밀번호를 입력하세요.');
     return;
   }
 
