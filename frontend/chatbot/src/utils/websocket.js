@@ -163,11 +163,7 @@ const reconnectWebSocket = (username) => {
 };
 
 const resetMessages = () => {
-  if (isConnected.value) {
-    console.warn("⚠️ 연결된 상태에서는 resetMessages() 사용 지양");
-  } else {
     messages.value = [];
-  }
 };
 
 export { messages, connectWebSocket, sendMessage, isConnected, disconnectWebSocket, resetMessages };
