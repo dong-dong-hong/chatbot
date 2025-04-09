@@ -18,7 +18,8 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from "vue-router";
-
+import { useModalStore } from '@/stores/modal.js'
+const modal = useModalStore();
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -27,7 +28,8 @@ const router = useRouter();
 
 const changePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    message.value = '새 비밀번호가 일치하지 않습니다.'
+    modal.showModal('새 비밀번호가 일치하지 않습니다.');
+    // message.value = '새 비밀번호가 일치하지 않습니다.'
     return
   }
 
@@ -42,9 +44,13 @@ const changePassword = async () => {
       }
     })
 
-    message.value = res.data.message
+    console.log("resres",res);
+
+    // message.value = res.data.message
+    modal.showModal = res.data.message
   } catch (e) {
-    message.value = e.response?.data?.error || '오류 발생'
+    modal.showModal = e.response?.data?.error || '오류 발생'
+    // message.value = e.response?.data?.error || '오류 발생'
   }
 }
 
@@ -57,44 +63,50 @@ const goBack = () => {
 .container {
   padding: 20px;
   max-width: 400px;
-  margin: auto;
+  margin: 80px auto;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: none;
+  background-color: white;
 }
 
 input {
   display: block;
-  width: 100%;
+  width: 95%;
   margin-bottom: 12px;
   padding: 10px;
   font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: transparent;
 }
 
 button {
-  background: #3498db;
-  color: white;
+  background: transparent;
+  color: #3498db;
   padding: 10px;
-  border: none;
+  border: 2px solid #3498db;
+  border-radius: 6px;
   cursor: pointer;
   width: 100%;
   font-weight: bold;
+  transition: all 0.3s;
 }
 
 button:hover {
-  background: #2980b9;
+  background: #3498db;
+  color: white;
 }
 
 .back-btn {
   margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
+  border: 2px solid #e74c3c;
+  color: #e74c3c;
 }
 
 .back-btn:hover {
-  background-color: #c0392b;
+  background-color: #e74c3c;
+  color: white;
 }
+
 </style>
