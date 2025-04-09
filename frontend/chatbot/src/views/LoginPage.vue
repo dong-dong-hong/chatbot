@@ -97,7 +97,7 @@ const kakaoLogin = () => {
 }
 
 .input-field {
-  width: 100%;
+  width: 90%;
   padding: 12px;
   margin: 10px 0;
   border: 1px solid #ccc;
