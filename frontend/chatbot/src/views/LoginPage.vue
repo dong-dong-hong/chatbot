@@ -2,8 +2,8 @@
   <div class="container">
     <div class="login-box">
       <h2>로그인</h2>
-      <input v-model="username" placeholder="Username" class="input-field" />
-      <input v-model="password" type="password" placeholder="Password" class="input-field" />
+      <input v-model="username" placeholder="Username" class="input-field" @keyup.enter="login" />
+      <input v-model="password" type="password" placeholder="Password" class="input-field" @keyup.enter="login" />
 
       <button @click="login" class="btn login-btn">로그인</button>
 
