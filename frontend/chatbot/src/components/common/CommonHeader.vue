@@ -3,11 +3,17 @@
     <div class="title">
       💬 챗봇
     </div>
-    <button @click="logout" class="logout-btn">
-      🚪 로그아웃
-    </button>
+    <div class="btn-group">
+      <button @click="goToChangePassword" class="change-btn">
+        🔒 비밀번호 변경
+      </button>
+      <button @click="logout" class="logout-btn">
+        🚪 로그아웃
+      </button>
+    </div>
   </div>
 </template>
+
 <script setup>
 import { useRouter } from "vue-router";
 import { disconnectWebSocket, resetMessages } from '@/utils/websocket.js'
@@ -19,6 +25,10 @@ const logout = () => {
   resetMessages();
   localStorage.removeItem("token");
   router.push("/login");
+};
+
+const goToChangePassword = () => {
+  router.push("/change-password");
 };
 </script>
 
@@ -33,7 +43,6 @@ const logout = () => {
   justify-content: space-between;
   align-items: center;
   border-radius: 12px 12px 0 0;
-  //margin: 0 auto 10px auto;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
@@ -45,7 +54,12 @@ const logout = () => {
   gap: 8px;
 }
 
-.logout-btn {
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.logout-btn, .change-btn {
   background: #e74c3c;
   border: none;
   padding: 8px 14px;
@@ -54,6 +68,14 @@ const logout = () => {
   cursor: pointer;
   font-weight: bold;
   transition: background 0.3s;
+}
+
+.change-btn {
+  background: #3498db;
+}
+
+.change-btn:hover {
+  background: #2980b9;
 }
 
 .logout-btn:hover {

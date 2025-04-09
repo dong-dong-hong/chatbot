@@ -51,4 +51,13 @@ public class JwtUtil {
             return false;
         }
     }
+
+    public String extractUsername(String bearer) {
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            String token = bearer.substring(7);
+            return getUsernameFromToken(token);
+        }
+        throw new IllegalArgumentException("유효하지 않은 Authorization 헤더 형식입니다.");
+    }
+
 }

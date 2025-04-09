@@ -117,6 +117,46 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(
+            @RequestHeader("Authorization") String token,
+            @RequestBody Map<String, String> request) {
+
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            // JWT 토큰에서 아이디 추출
+            String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+            Optional<User> userOpt = userService.findByUsername(username);
+
+            if (userOpt.isEmpty()) {
+                response.put("error", "사용자를 찾을 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            User user = userOpt.get();
+            String currentPassword = request.get("currentPassword");
+            String newPassword = request.get("newPassword");
+
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                response.put("error", "현재 비밀번호가 일치하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+            // 비밀번호 변경
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userService.save(user);
+
+            response.put("message", "비밀번호가 성공적으로 변경되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("error", "비밀번호 변경 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
 
 
 
