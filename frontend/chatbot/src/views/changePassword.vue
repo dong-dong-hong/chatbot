@@ -28,7 +28,7 @@ const router = useRouter();
 
 const changePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    modal.showModal('새 비밀번호가 일치하지 않습니다.');
+    modal.showModal('현재 비밀번호나 새 비밀번호가 일치하지 않습니다.');
     // message.value = '새 비밀번호가 일치하지 않습니다.'
     return
   }
@@ -44,12 +44,11 @@ const changePassword = async () => {
       }
     })
 
-    console.log("resres",res);
-
     // message.value = res.data.message
-    modal.showModal = res.data.message
+    modal.showModal(res.data.message);
+    router.push('/chatbot');
   } catch (e) {
-    modal.showModal = e.response?.data?.error || '오류 발생'
+    modal.showModal(e.response?.data?.error || '오류 발생');
     // message.value = e.response?.data?.error || '오류 발생'
   }
 }

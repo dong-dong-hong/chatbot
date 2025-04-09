@@ -3,6 +3,8 @@ package com.chatbot.project.controller;
 import com.chatbot.project.entity.User;
 import com.chatbot.project.security.JwtUtil;
 import com.chatbot.project.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,8 @@ import java.util.UUID;
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173") // CORS 설정 추가
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
@@ -119,16 +123,21 @@ public class AuthController {
 
     @PostMapping("/change-password")
     public ResponseEntity<Map<String, String>> changePassword(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader("Authorization") String authHeader,
             @RequestBody Map<String, String> request) {
 
         Map<String, String> response = new HashMap<>();
 
         try {
-            // JWT 토큰에서 아이디 추출
-            String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-            Optional<User> userOpt = userService.findByUsername(username);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.put("error", "유효하지 않은 토큰입니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
 
+            String jwt = authHeader.substring(7); // Bearer 제거
+            String username = jwtUtil.extractUsername(jwt); // token만 넘기기
+
+            Optional<User> userOpt = userService.findByUsername(username);
             if (userOpt.isEmpty()) {
                 response.put("error", "사용자를 찾을 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -138,12 +147,16 @@ public class AuthController {
             String currentPassword = request.get("currentPassword");
             String newPassword = request.get("newPassword");
 
+            if (currentPassword == null || newPassword == null) {
+                response.put("error", "현재 비밀번호와 새 비밀번호를 모두 입력해주세요.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
             if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
                 response.put("error", "현재 비밀번호가 일치하지 않습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
-            // 비밀번호 변경
             user.setPassword(passwordEncoder.encode(newPassword));
             userService.save(user);
 
@@ -151,10 +164,12 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            logger.error("비밀번호 변경 중 오류 발생", e);
             response.put("error", "비밀번호 변경 중 오류 발생: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 
 
 
