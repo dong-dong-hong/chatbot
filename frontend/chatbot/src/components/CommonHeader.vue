@@ -6,12 +6,13 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { disconnectWebSocket } from '@/utils/websocket.js'
+import { disconnectWebSocket, resetMessages } from '@/utils/websocket.js'
 
 const router = useRouter();
 
 const logout = () => {
   disconnectWebSocket();
+  resetMessages();
   localStorage.removeItem("token");
   router.push("/login");
 };

@@ -7,10 +7,11 @@ const messages = ref([]);
 let stompClient = null;
 let isConnected = ref(false);
 let reconnectAttempts = 0;
+let reconnectTimeout = null; // 재연결 타이머 ID 저장용
 const MAX_RECONNECT_DELAY = 30000;
 
 // WebSocket 연결 함수
-const connectWebSocket = () => {
+const connectWebSocket = (username) => {
   if (isConnected.value) {
     console.log('🔌 WebSocket 이미 연결됨');
     return;
@@ -32,6 +33,7 @@ const connectWebSocket = () => {
     webSocketFactory: () => socket,
     connectHeaders: {
       Authorization: `Bearer ${token}`,
+      username: username,
     },
     debug: str => console.log("[STOMP]", str),
     reconnectDelay: 0,
@@ -45,7 +47,6 @@ const connectWebSocket = () => {
     console.log('✅ WebSocket (STOMP) 연결됨:', frame);
     isConnected.value = true;
     reconnectAttempts = 0;
-    console.log("📩 WebSocket 메시지 구독 시작: '/topic/messages'");
 
     stompClient.subscribe('/topic/messages', (message) => {
       try {
@@ -55,13 +56,27 @@ const connectWebSocket = () => {
         console.error('❌ 메시지 파싱 실패:', e);
       }
     });
+
+    stompClient.subscribe('/user/queue/messages', (message) => {
+      try {
+        const msg = JSON.parse(message.body);
+        console.log('전체 메시지:', msg);
+        console.log(`🤖 [봇 응답] 수신된 메시지: ${message.body}`);
+        // messages.value.push(JSON.parse(message.body));
+
+        messages.value = [...messages.value, msg];
+      } catch (e) {
+        console.error('❌ 봇 메시지 파싱 실패:', e);
+      }
+    });
+
   };
 
   // WebSocket 연결 종료 시 재연결 로직
   stompClient.onWebSocketClose = () => {
     console.log('❌ WebSocket 연결 종료됨');
     isConnected.value = false;
-    // reconnectWebSocket();
+    reconnectWebSocket();
   };
   stompClient.onWebSocketError = (event) => {
     console.error("❌ WebSocket 에러 발생:", event);
@@ -104,38 +119,51 @@ const sendMessage = (text, username) => {
       headers: { 'content-type': 'application/json' },
     });
 
-    messages.value.push(messageObj);
+    // messages.value.push(messageObj);
     console.log(`📩 메시지 전송 성공: ${text}`);
   } catch (error) {
     console.error('❌ 메시지 전송 실패:', error);
   }
 };
 
+
+
 const disconnectWebSocket = () => {
-  // if (stompClient && stompClient.connected) {
-  //   console.log("🔌 WebSocket 연결 해제 중...");
-  //   stompClient.deactivate();
-  //   stompClient = null;
-  // }
-  console.log('로그아웃:',stompClient);
-  stompClient.deactivate();
-  stompClient = null;
+  if (stompClient && stompClient.connected) {
+    console.log("🔌 WebSocket 연결 해제 중...");
+    stompClient.deactivate();
+    stompClient = null;
+  }
+
+  if (reconnectTimeout) {
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
+  }
+
+  isConnected.value = false;
+  messages.value = [];
+  console.log('🧹 WebSocket 종료');
 };
 
 // WebSocket 자동 재연결
-// const reconnectWebSocket = () => {
-//   if (stompClient) {
-//     stompClient.deactivate();
-//     stompClient = null;
-//   }
-//
-//   const reconnectDelay = Math.min(5000 * 2 ** reconnectAttempts, MAX_RECONNECT_DELAY);
-//   reconnectAttempts++;
-//
-//   console.log(`🔄 WebSocket 강제 종료됨. ${reconnectDelay / 1000}초 후 재연결 시도...`);
-//   setTimeout(() => {
-//     if (!isConnected.value) connectWebSocket();
-//   }, reconnectDelay);
+const reconnectWebSocket = () => {
+  if (stompClient) {
+    stompClient.deactivate();
+    stompClient = null;
+  }
+
+  const reconnectDelay = Math.min(5000 * 2 ** reconnectAttempts, MAX_RECONNECT_DELAY);
+  reconnectAttempts++;
+
+  console.log(`🔄 WebSocket 강제 종료됨. ${reconnectDelay / 1000}초 후 재연결 시도...`);
+  setTimeout(() => {
+    if (!isConnected.value) connectWebSocket();
+  }, reconnectDelay);
+};
+
+// export const resetMessages = () => {
+//   messages.value = [];
 // };
+
 
 export { messages, connectWebSocket, sendMessage, isConnected, disconnectWebSocket };

@@ -8,6 +8,10 @@ server:
         secure: false # 🔧 개발에서는 false로 해야 HTTP에서도 세션 쿠키 발급됨
 
 spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
   datasource:
     url: jdbc:mariadb://127.0.0.1:3306/chatbot?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: root
@@ -18,6 +22,7 @@ spring:
       pool-name: HikariCP
       connection-timeout: 30000
       maximum-pool-size: 10
+
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     open-in-view: false

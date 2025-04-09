@@ -5,8 +5,11 @@
         v-for="(msg, index) in messages"
         :key="index"
         :class="['message',
-            msg.sender === myName ? 'user' :
-            msg.sender === 'bot' ? 'bot' : 'other']"
+        msg.sender === myName
+        ? 'user'
+        : msg.sender === 'bot'
+          ? 'bot'
+          : 'other']"
       >
         <span class="bubble">{{ msg.text }}</span>
       </div>
@@ -37,6 +40,7 @@ export default {
       if (newMessage.value.trim()) {
         sendMessage(newMessage.value, myName.value);
         newMessage.value = '';
+        console.log("메시지 내용: ",messages.value);
       }
     };
 
@@ -51,7 +55,7 @@ export default {
         }
       }
       console.log('📡 Chat 컴포넌트 마운트됨. WebSocket 연결 시도...');
-      connectWebSocket();
+      connectWebSocket(myName.value);
     });
 
     return { newMessage, sendMessageHandler, messages, isConnected, myName };
