@@ -60,11 +60,13 @@ const login = async () => {
       localStorage.setItem('token', data.token);
       router.push('/chatbot');
     } else {
-      alert(`로그인 실패: ${data.error || '아이디 또는 비밀번호를 확인하세요.'}`);
+      modal.showModal(`로그인 실패: ${data.error || '아이디 또는 비밀번호를 확인하세요.'}`);
+      // alert(`로그인 실패: ${data.error || '아이디 또는 비밀번호를 확인하세요.'}`);
     }
   } catch (error) {
     console.error('❌ 로그인 오류:', error);
-    alert('서버 오류로 인해 로그인할 수 없습니다.');
+    modal.showModal('서버 오류로 인해 로그인할 수 없습니다.');
+    // alert('서버 오류로 인해 로그인할 수 없습니다.');
   }
 };
 
