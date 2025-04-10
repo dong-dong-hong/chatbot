@@ -29,8 +29,12 @@ const router = useRouter();
 const changePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
     modal.showModal('현재 비밀번호나 새 비밀번호가 일치하지 않습니다.');
-    // message.value = '새 비밀번호가 일치하지 않습니다.'
-    return
+    return;
+  }
+
+  if(currentPassword.value === newPassword.value) {
+    modal.showModal('새 비밀번호는 기존 비밀번호와 달라야 합니다.');
+    return;
   }
 
   try {
@@ -44,12 +48,10 @@ const changePassword = async () => {
       }
     })
 
-    // message.value = res.data.message
     modal.showModal(res.data.message);
     router.push('/chatbot');
   } catch (e) {
     modal.showModal(e.response?.data?.error || '오류 발생');
-    // message.value = e.response?.data?.error || '오류 발생'
   }
 }
 
