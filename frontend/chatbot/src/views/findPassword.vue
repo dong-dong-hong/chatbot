@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="box">
-      <h2>비밀번호 찾기</h2>
+      <h3>비밀번호 찾기(임시 패스워드로 변경)</h3>
       <input v-model="username" placeholder="아이디 입력" class="input-field" />
       <input v-model="email" placeholder="가입한 이메일을 입력하세요" class="input-field" />
       <button @click="findPassword" class="btn">비밀번호 찾기</button>
