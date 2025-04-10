@@ -39,31 +39,31 @@ const goToChangePassword = () => {
 };
 
 // 회원 탈퇴
-const deleteAccount = async () => {
-  const confirmDelete = confirm("정말로 회원 탈퇴하시겠습니까?");
-  if (!confirmDelete) return;
+const deleteAccount = () => {
+  modal.showConfirm("정말로 회원 탈퇴하시겠습니까?", async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8080/api/auth/delete", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:8080/api/auth/delete", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
+      if (res.ok) {
+        modal.showModal("회원 탈퇴가 완료되었습니다.");
+        logout();
+      } else {
+        const errText = await res.text();
+        modal.showModal(`탈퇴 실패: ${errText}`);
       }
-    });
-
-    if (res.ok) {
-      modal.showModal("회원 탈퇴가 완료되었습니다.")
-      logout();
-    } else {
-      const errText = await res.text();
-      modal.showModal(`탈퇴 실패: ${errText}`);
+    } catch (e) {
+      console.error(e);
+      modal.showModal("서버 오류로 탈퇴에 실패했습니다.");
     }
-  } catch (e) {
-    console.error(e);
-    modal.showModal("서버 오류로 탈퇴에 실패했습니다.");
-  }
+  });
 };
+
 </script>
 
 <style scoped>
