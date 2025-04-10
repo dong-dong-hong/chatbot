@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ChatScheduler {
+public class ChatbotScheduler {
 
     private final EntityManager entityManager;
 
@@ -18,7 +18,7 @@ public class ChatScheduler {
     @Scheduled(cron = "0 0 1 * * *") // 매일 새벽 1시(실제 운영서비스)
 //    @Scheduled(cron = "*/30 * * * * *") // 테스트용
     @Transactional
-    public void cleanMessagesOfDeletedUsers() {
+    public void deleteOrphanMessages() {
         String sql = """
             DELETE FROM chatbot_message m
             WHERE NOT EXISTS (
