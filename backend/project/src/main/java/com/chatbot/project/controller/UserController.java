@@ -81,4 +81,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("/check-username")
+    public ResponseEntity<Map<String, Object>> checkUsername(@RequestParam String username) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<User> existingUser = userService.findByUsername(username);
+
+        if (existingUser.isPresent()) {
+            response.put("available", false);
+            response.put("message", "이미 사용 중인 아이디입니다.");
+        } else {
+            response.put("available", true);
+            response.put("message", "사용 가능한 아이디입니다.");
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }
