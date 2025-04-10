@@ -25,7 +25,7 @@ public class ChatbotScheduler {
                 SELECT 1 FROM user u
                 WHERE u.username COLLATE utf8mb4_general_ci = m.sender COLLATE utf8mb4_general_ci
             )
-        """;
+        """; // 정확한 한글(및 동아시아 언어, 일본어, 중국어) 검색을 처리하기 위해서는 utf8mb4_general_ci 로 설정 필요(주의)
 
         int deletedCount = entityManager
                 .createNativeQuery(sql)
