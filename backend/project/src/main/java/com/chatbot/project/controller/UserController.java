@@ -97,5 +97,27 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deleteUser(@RequestHeader("Authorization") String tokenHeader) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String token = tokenHeader.replace("Bearer ", "").trim();
+
+            if (!jwtUtil.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "유효하지 않은 토큰입니다."));
+            }
+
+            String username = jwtUtil.getUsernameFromToken(token);
+
+            userService.deleteByUsername(username);
+
+            response.put("message", "회원 탈퇴가 완료되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", "회원 탈퇴 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 }

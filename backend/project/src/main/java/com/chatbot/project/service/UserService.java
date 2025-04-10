@@ -40,4 +40,10 @@ public class UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    public void deleteByUsername(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        userOpt.ifPresent(userRepository::delete);
+    }
+
 }
