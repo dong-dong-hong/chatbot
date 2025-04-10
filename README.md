@@ -20,23 +20,26 @@ Vue + Spring Boot 환경에서 동작하며, JWT 로그인 기능과 MariaDB 연
 
 ## 🔐 주요 기능
 
-- ✅ **JWT 로그인 및 회원가입 기능**  
-  - 사용자 정보 입력 시 회원가입 처리 (username, password, email 등)  
+- ✅ **JWT 로그인 및 회원가입 기능**
+  - 사용자 정보 입력 시 회원가입 처리 (username, password, email 등)
   - 로그인 시 JWT 토큰을 발급하고 인증 처리 수행
   - 계정 정보 찾기 및 보안 관리 기능 지원 (아이디/비밀번호 찾기 및 변경)
+  - **회원 탈퇴 기능 지원**: 로그인한 사용자가 자신의 계정을 삭제할 수 있음
 
-- 💬 **실시간 채팅 기능**  
-  - STOMP WebSocket을 통한 실시간 메시지 전송  
-  - 클라이언트 → 서버: `/app/chat` 경로로 메시지 전송  
-  - 서버 → 클라이언트: `/topic/messages` 경로 구독을 통해 메시지 수신  
-  - 채팅 메시지는 DB에 저장됨 (sender, text, createdAt)  
+- 💬 **실시간 채팅 기능**
+  - STOMP WebSocket을 통한 실시간 메시지 전송
+  - 클라이언트 → 서버: `/app/chat` 경로로 메시지 전송
+  - 서버 → 클라이언트: `/topic/messages` 경로 구독을 통해 메시지 수신
+  - 채팅 메시지는 DB에 저장됨 (sender, text, createdAt)
 
-- 🔁 **자동 재연결 처리**  
-  - WebSocket 연결이 끊기면 일정 시간 후 자동 재연결  
-  - 메시지 전송 실패 시 경고 출력 및 연결 복구 시도  
+- 🧹 **스케줄러를 통한 메시지 정리 기능**
+  - 매일 새벽 1시, 탈퇴한 사용자(sender)와 관련된 메시지를 정기적으로 삭제
+  - `chatbot_message` 테이블에서 존재하지 않는 사용자의 메시지 자동 정리
 
-- 🌐 **보안 및 CORS 처리**  
-  - `@CrossOrigin` 또는 `.setAllowedOrigins("*")` 설정으로 CORS 허용  
+- 🔁 **자동 재연결 처리**
+  - WebSocket 연결이 끊기면 일정 시간 후 자동 재연결
+  - 메시지 전송 실패 시 경고 출력 및 연결 복구 시도
+
+- 🌐 **보안 및 CORS 처리**
+  - `@CrossOrigin` 또는 `.setAllowedOrigins("*")` 설정으로 CORS 허용
   - JWT 기반 인증 시스템 도입
-
- 
