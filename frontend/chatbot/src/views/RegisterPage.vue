@@ -178,6 +178,11 @@ const register = async () => {
     errorMessage.value = "전화번호를 입력해주세요.";
     return;
   }
+  const correctPhone = phone.value.replace(/\D/g, '');
+  if (!/^01[0-9]{8,9}$/.test(correctPhone)) {
+    errorMessage.value = "유효한 전화번호 형식이 아닙니다. 다시 입력하세요 예) 010-1234-5678";
+    return;
+  }
   if (!password.value || !confirmPassword.value) {
     errorMessage.value = "비밀번호를 입력해주세요";
     return;
