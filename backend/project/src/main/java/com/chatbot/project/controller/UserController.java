@@ -38,6 +38,8 @@ public class UserController {
             String phoneNumber = request.get("phone_number");
             String role = request.get("role");
 
+            System.out.println("role" + role);
+
             // 기존 사용자 확인
             Optional<User> existingUser = userService.findByUsername(username);
             if (existingUser.isPresent()) {

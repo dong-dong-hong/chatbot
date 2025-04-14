@@ -166,6 +166,10 @@ const checkUsername = async () => {
 const register = async () => {
   errorMessage.value = '';
 
+  if (!isUsernameAvailable.value) {
+    errorMessage.value = '아이디 중복 확인을 먼저 해주세요.';
+    return;
+  }
   if (!username.value) {
     errorMessage.value = "아이디를 입력해주세요.";
     return;
@@ -204,6 +208,7 @@ const register = async () => {
         phone: phone.value,
         password: password.value,
         phone_number: phone.value,
+        // role: "ADMIN"
         role: "USER"
       }),
       mode: 'cors'

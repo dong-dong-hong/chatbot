@@ -58,7 +58,11 @@ const login = async () => {
     if (response.ok && data.token) {
       console.log('✅ 받은 토큰:', data.token);
       localStorage.setItem('token', data.token);
-      router.push('/chatbot');
+      if(username.value === "admin") { // 어드민 전용 페이지로 이동
+        router.push('/admin-dashboard');
+      } else {
+        router.push('/chatbot');
+      }
     } else {
       modal.showModal(`로그인 실패: ${data.error || '아이디 또는 비밀번호를 확인하세요.'}`);
       // alert(`로그인 실패: ${data.error || '아이디 또는 비밀번호를 확인하세요.'}`);

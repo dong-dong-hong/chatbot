@@ -5,6 +5,7 @@ import ChatPage from '@/views/chatPage.vue'
 import FindUsername from '@/views/FindUsername.vue';
 import FindPassword from '@/views/FindPassword.vue';
 import ChangePassword from '@/views/ChangePassword.vue'
+import AdminDashboard from '@/views/adminDashboard.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -13,7 +14,8 @@ const routes = [
   { path: '/chatbot', component: ChatPage },
   { path: '/change-password', component: ChangePassword },
   { path: '/find-username', component: FindUsername },
-  { path: '/find-password', component: FindPassword }
+  { path: '/find-password', component: FindPassword },
+  { path: '/admin-dashboard', component: AdminDashboard }
 ]
 
 const router = createRouter({

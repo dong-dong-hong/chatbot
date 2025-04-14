@@ -9,8 +9,16 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
+      }
+    }
+  },
   define: {
     global: 'window'
   }
-  // vite.config.js에서 define 옵션을 사용해 global 객체를 명시적으로 설정하지 않았기 때문에 벌어짐.
-})
+});

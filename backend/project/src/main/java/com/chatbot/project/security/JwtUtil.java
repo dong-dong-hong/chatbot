@@ -10,14 +10,13 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // 꼭 256bit 이상 문자열로 설정하세요! (32자 이상)
     private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcyIsImlhdCI6MTc0MzY5MTYxOSwiZXhwIjoxNzQzNjk1MjE5fQ._JSPdGTY90Vc3YgLw3P5d_i3EQ1Ztkunb1hDAaIET1M";
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // ✅ 토큰 생성
+    // 토큰 생성
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -27,7 +26,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ✅ 토큰에서 username 추출
+    // 토큰에서 username 추출
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -38,7 +37,7 @@ public class JwtUtil {
         return claims.getSubject(); // 일반적으로 username 저장됨
     }
 
-    // ✅ 토큰 유효성 검사
+    // 토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
