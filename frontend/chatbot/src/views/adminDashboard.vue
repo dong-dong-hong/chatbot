@@ -14,7 +14,6 @@
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="text" label="내용" />
       <el-table-column prop="sender" label="보낸 아이디" width="120" />
-<!--      <el-table-column prop="receiver" label="받은 챗봇" width="120" />-->
       <el-table-column prop="createdAt" label="보낸 시간" width="180" :formatter="formatDate" />
     </el-table>
 
@@ -23,7 +22,6 @@
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="text" label="내용" />
       <el-table-column prop="sender" label="보낸 아이디" width="120" />
-<!--      <el-table-column prop="receiver" label="받은 챗봇" width="120" />-->
       <el-table-column prop="createdAt" label="보낸 시간" width="180" :formatter="formatDate" />
     </el-table>
   </div>
