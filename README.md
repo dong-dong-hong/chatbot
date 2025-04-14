@@ -7,14 +7,14 @@ Vue + Spring Boot 환경에서 동작하며, JWT 로그인 기능과 MariaDB 연
 
 ## 📦 사용한 스택
 
-| 분류         | 기술                            |
-|--------------|----------------------------------|
-| 프론트엔드   | Vue 3 + Yarn + Vite + Pinia      |
-| 백엔드       | Spring Boot 3.4.2 + Spring Security |
-| 실시간 통신  | STOMP over WebSocket + SockJS   |
-| 인증         | JWT                             |
-| 데이터베이스 | MariaDB                         |
-| ORM          | Spring Data JPA                 |
+| 분류         | 기술                                |
+|--------------|--------------------------------------|
+| 프론트엔드   | Vue 3 + Yarn + Vite + Pinia          |
+| 백엔드       | Spring Boot 3.4.2 + Spring Security  |
+| 실시간 통신  | STOMP over WebSocket + SockJS       |
+| 인증         | JWT                                  |
+| 데이터베이스 | MariaDB                              |
+| ORM          | Spring Data JPA                      |
 
 ---
 
@@ -43,3 +43,15 @@ Vue + Spring Boot 환경에서 동작하며, JWT 로그인 기능과 MariaDB 연
 - 🌐 **보안 및 CORS 처리**
   - `@CrossOrigin` 또는 `.setAllowedOrigins("*")` 설정으로 CORS 허용
   - JWT 기반 인증 시스템 도입
+
+---
+
+## 🧑‍💼 관리자 기능 (Admin Dashboard)
+
+- 📊 **관리자 전용 통계 대시보드 제공**
+  - 전체 메시지 수, 고유 사용자 수, 봇 메시지 수 등 주요 지표 실시간 집계
+  - 일자별 메시지 수를 **Chart.js + Element Plus** 기반 막대그래프로 시각화
+  - 최근 메시지와 전체 메시지를 **그리드 테이블**로 관리자가 확인 가능
+  - `/api/admin/**` 경로로 백엔드 API 제공 (Spring Boot Controller 구성)
+  - `admin` 계정으로 로그인한 경우에만 접근 가능
+  - 모든 통계는 MariaDB 기반 실시간 데이터 기준
