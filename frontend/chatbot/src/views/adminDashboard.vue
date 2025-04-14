@@ -13,8 +13,8 @@
     <el-table :data="recentMessages" stripe border style="width: 100%">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="text" label="내용" />
-      <el-table-column prop="sender" label="보낸 사람" width="120" />
-      <el-table-column prop="receiver" label="받는 사람" width="120" />
+      <el-table-column prop="sender" label="보낸 아이디" width="120" />
+<!--      <el-table-column prop="receiver" label="받은 챗봇" width="120" />-->
       <el-table-column prop="createdAt" label="보낸 시간" width="180" :formatter="formatDate" />
     </el-table>
 
@@ -22,8 +22,8 @@
     <el-table :data="allMessages" stripe border height="400" style="width: 100%">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="text" label="내용" />
-      <el-table-column prop="sender" label="보낸 사람" width="120" />
-      <el-table-column prop="receiver" label="받는 사람" width="120" />
+      <el-table-column prop="sender" label="보낸 아이디" width="120" />
+<!--      <el-table-column prop="receiver" label="받은 챗봇" width="120" />-->
       <el-table-column prop="createdAt" label="보낸 시간" width="180" :formatter="formatDate" />
     </el-table>
   </div>
